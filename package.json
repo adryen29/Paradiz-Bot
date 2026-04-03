@@ -1,0 +1,14 @@
+{
+  "name": "paradiz-ranker",
+  "version": "1.0.0",
+  "description": "Système de ranking automatique pour Paradiz Café",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "noblox.js": "^5.3.0",
+    "discord.js": "^14.15.3",
+    "express": "^4.19.2"
+  }
+}
