@@ -106,7 +106,7 @@ app.post('/rank-up', async (req, res) => {
     }
 });
 
-// --- NOUVEAU : Endpoint request-exchange ---
+// --- Endpoint request-exchange ---
 app.post('/request-exchange', async (req, res) => {
     const { userId, username, amount } = req.body;
     
@@ -137,21 +137,22 @@ app.post('/request-exchange', async (req, res) => {
     }
 });
 
-// --- NOUVEAU : Mise à jour du tableau Discord ---
+// --- Mise à jour du tableau Discord (Points -> Robux) ---
 async function updatePublicTable() {
     try {
         const displayChannel = await client.channels.fetch(process.env.PAYMENTS_CHANNEL_ID);
         const logChannel = await client.channels.fetch(process.env.PAYMENTS_LOGS_CHANNEL);
         const logs = await logChannel.messages.fetch({ limit: 100 });
 
-        let table = "```\n| Pseudo      | Montant | Date                |\n|-------------|---------|---------------------|\n";
+        let table = "```\n| Pseudo      | Robux   | Date                |\n|-------------|---------|---------------------|\n";
         const rows = [];
 
         logs.forEach(m => {
             try {
                 const d = JSON.parse(m.content);
-                table += `| ${d.username.padEnd(11)} | ${d.amount.toString().padEnd(7)} | ${d.date} |\n`;
-                rows.push(d);
+                const robuxAmount = Math.floor(d.amount * 0.05); // Conversion Points -> Robux
+                table += `| ${d.username.padEnd(11)} | ${(robuxAmount + " R$").padEnd(7)} | ${d.date} |\n`;
+                rows.push({ ...d, robux: robuxAmount });
             } catch(e) {}
         });
         table += "```";
@@ -165,7 +166,7 @@ async function updatePublicTable() {
         rows.slice(0, 5).forEach(r => { 
             components.push(new ButtonBuilder()
                 .setCustomId(`delete_${r.userId}`)
-                .setLabel(`Payer ${r.username}`)
+                .setLabel(`Payer ${r.username} (${r.robux} R$)`)
                 .setStyle(ButtonStyle.Danger));
         });
 
