@@ -150,7 +150,7 @@ async function updatePublicTable() {
         logs.forEach(m => {
             try {
                 const d = JSON.parse(m.content);
-                const robuxAmount = Math.floor(d.amount * 0.05); // Conversion Points -> Robux
+                const robuxAmount = Math.floor(d.amount * 0.025); // Conversion Points -> Robux
                 table += `| ${d.username.padEnd(11)} | ${(robuxAmount + " R$").padEnd(7)} | ${d.date} |\n`;
                 rows.push({ ...d, robux: robuxAmount });
             } catch(e) {}
